@@ -43,3 +43,8 @@ yarn-error.log*
 
 # OS files
 Thumbs.db
+
+# Documents & temporary files
+DOC-*.pdf
+*.pdf
+
