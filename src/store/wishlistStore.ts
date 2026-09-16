@@ -1,0 +1,40 @@
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { Product } from "@/types";
+
+interface WishlistStore {
+  items: Product[];
+  toggleWishlist: (product: Product) => void;
+  isInWishlist: (productId: string) => boolean;
+  removeFromWishlist: (productId: string) => void;
+  clearWishlist: () => void;
+}
+
+export const useWishlistStore = create<WishlistStore>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      toggleWishlist: (product) => {
+        const current = get().items;
+        const exists = current.some((p) => p.id === product.id);
+        if (exists) {
+          set({ items: current.filter((p) => p.id !== product.id) });
+        } else {
+          set({ items: [...current, product] });
+        }
+      },
+      isInWishlist: (productId) => {
+        return get().items.some((p) => p.id === productId);
+      },
+      removeFromWishlist: (productId) => {
+        set((state) => ({
+          items: state.items.filter((p) => p.id !== productId),
+        }));
+      },
+      clearWishlist: () => set({ items: [] }),
+    }),
+    {
+      name: "alkalineseva-wishlist-v1",
+    }
+  )
+);
